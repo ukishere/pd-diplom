@@ -1,10 +1,15 @@
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import AbstractUser
+from .managers import AbstractUserManager
 
 
 class User(AbstractUser):
-    # email = models.EmailField(unique=True)
-    is_vendor = models.BooleanField()
+    REQUIRED_FIELDS = []
+    objects = AbstractUserManager()
+    USERNAME_FIELD = 'email'
+    email = models.EmailField(_('email address'), unique=True)
+    is_vendor = models.BooleanField(default=False)
 
 
 class Shop(models.Model):
