@@ -1,10 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Login</title>
 </head>
+
 <body>
-    {{ form.as_p }}
+    Вход в систему<br>
+        <form action="" method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Залогиниться">
+        </form>
+    Не зарегистрированы?<br>
+    <br>
+        <a href={{ window.location.hostname }}"/register">
+        <input type="submit" value="Перейти к регистрации"></a>
+    <br>
+    <br>
+    Забыли пароль?<br>
+    <br>
+        <a href="{% url "password_reset" %}">
+        <input type="submit" value="Восстановить пароль"></a>
 </body>
-</html>

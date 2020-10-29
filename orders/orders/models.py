@@ -1,15 +1,30 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import AbstractUser
-from .managers import AbstractUserManager
+from .managers import OrdersUserManager
 
 
 class User(AbstractUser):
+    username = None
     REQUIRED_FIELDS = []
-    objects = AbstractUserManager()
+    objects = OrdersUserManager()
     USERNAME_FIELD = 'email'
-    email = models.EmailField(_('email address'), unique=True)
-    is_vendor = models.BooleanField(default=False)
+    email = models.EmailField(verbose_name='Электронная почта', unique=True)
+    is_vendor = models.BooleanField(default=False, verbose_name='Представитель поставщика')
+
+    first_name = models.CharField(verbose_name='Имя', max_length=50, blank=True)
+    second_name = models.CharField(verbose_name='Фамилия', max_length=50, blank=True)
+    third_name = models.CharField(verbose_name='Отчество', max_length=50, blank=True)
+    company = models.CharField(verbose_name='Компания', max_length=50, blank=True)
+    position = models.CharField(verbose_name='Должность', max_length=50, blank=True)
+
+
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+
+    def __str__(self):
+        return self.email
 
 
 class Shop(models.Model):

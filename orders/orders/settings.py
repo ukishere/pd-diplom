@@ -101,6 +101,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework_yaml.parsers.YAMLParser',
@@ -110,10 +111,20 @@ REST_FRAMEWORK = {
     ],
 }
 
-AUTH_USER_MODEL = 'orders.User'
 
-# Internationalization
-# https://docs.djangoproject.com/en/2.0/topics/i18n/
+AUTH_USER_MODEL = 'orders.User'
+# LOGIN_URL = '/login/'
+# LOGIN_REDIRECT_URL = '/login/'
+STATIC_URL = '/static/'
+
+
+EMAIL_HOST = 'smtp.mail.ru'
+EMAIL_PORT = 2525
+EMAIL_HOST_USER = 'django_test_diploma@mail.ru'
+EMAIL_HOST_PASSWORD = 'djangodjango'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 
 LANGUAGE_CODE = 'en-us'
 
@@ -124,11 +135,3 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.0/howto/static-files/
-
-STATIC_URL = '/static/'
-
-LOGIN_REDIRECT_URL = '/test/'
