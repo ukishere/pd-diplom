@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!--    <meta charset="UTF-8">-->
     <title>For vendors</title>
 </head>
 <body>
-    Вы залогинились как поставщик<br>
-    Доступные опции:<br>
-    1. Загрузить прайс (yaml)<br>
-    2. Включить или выключить прием заказов(http)<br>
-    3. Получить список оформленных заказов (json)<br>
+    Вы залогинились как поставщик.<br>
+    <br>
+    Для загрузки данных направьте их в формате yaml.<br>
+    <br>
+    Для включения/выключения приема заказов направьте любой put запрос.<br>
+    Текущий сатус: {% if Status %} прием заказов включен {% else %} прием заказов выключен {% endif %}<br>
+    <br>
+    У вас заказали следующие модели:<br>
+    {% for order in Orders %}
+    {{ order.order }} Модель {{ order.good_id }} в количестве {{ order.quantity }} шт.<br>
+    {% endfor %}
     <a href={{ window.location.hostname }}"/logout"><input type="submit" value="Разлогиниться"></a>
 </body>
 </html>

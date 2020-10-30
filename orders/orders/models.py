@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import AbstractUser
 from .managers import OrdersUserManager
 
@@ -29,7 +28,7 @@ class User(AbstractUser):
 
 class Shop(models.Model):
     name = models.CharField(max_length=50, verbose_name='Название')
-    status = models.BooleanField(default=True, verbose_name='Статус')
+    status = models.BooleanField(default=True, verbose_name='Принимает заказы')
 
     class Meta:
         verbose_name = 'Поставщик'
@@ -50,9 +49,22 @@ class Category(models.Model):
         return self.name
 
 
+class AdditionalGoodParameter(models.Model):
+    parameter = models.CharField(max_length=50, verbose_name='Наименование')
+    value = models.CharField(max_length=50, verbose_name='Значение')
+
+    class Meta:
+        verbose_name = 'Параметр'
+        verbose_name_plural = 'Параметры'
+
+    def __str__(self):
+        return self.parameter+'='+self.value
+
+
 class Good(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=True, null=True, verbose_name='Категория')
     shops = models.ManyToManyField(Shop, related_name='shops', verbose_name='Поставщики')
+    parameters = models.ManyToManyField(AdditionalGoodParameter, related_name='parameters', verbose_name='Параметры')
     model = models.CharField(max_length=50, verbose_name='Модель')
     name = models.CharField(max_length=50, verbose_name='Название')
     price = models.PositiveIntegerField(verbose_name='Оптовая цена')
@@ -67,18 +79,42 @@ class Good(models.Model):
         return self.name
 
 
-class AdditionalGoodParameter(models.Model):
-    good = models.ForeignKey(Good, related_name='additional_parameters', blank=True, on_delete=models.CASCADE, verbose_name='Товар')
-    parameter = models.CharField(max_length=50, verbose_name='Наименование')
-    value = models.CharField(max_length=50, verbose_name='Значение')
-
-    class Meta:
-        verbose_name = 'Параметр'
-        verbose_name_plural = 'Параметры'
+class ForWhom(models.Model):
+    city = models.CharField(max_length=50, verbose_name='Город')
+    street = models.CharField(max_length=50, verbose_name='Улица')
+    house = models.CharField(max_length=50, verbose_name='Дом')
+    structure = models.CharField(max_length=50, verbose_name='Корпус', blank=True)
+    building = models.CharField(max_length=50, verbose_name='Строение', blank=True)
+    apartment = models.CharField(max_length=50, verbose_name='Квартира', blank=True)
+    phone = models.CharField(max_length=50, verbose_name='Телефон', blank=True)
 
 
 class Order(models.Model):
-    user = models.ForeignKey(User, related_name='orders', blank=True, on_delete=models.CASCADE)
-    dt = models.DateTimeField(auto_now_add=True)
-    is_delivered = models.BooleanField()
-    adress = models.CharField(max_length=100)
+    user = models.ForeignKey(User, related_name='orders', blank=True, on_delete=models.CASCADE, verbose_name='Пользователь')
+    for_whom= models.ForeignKey(ForWhom, related_name='for_whom', blank=True, null=True, on_delete=models.CASCADE, verbose_name='Куда доставляем')
+    dt = models.DateTimeField(auto_now_add=True, verbose_name='Дата и время создания')
+    is_delivered = models.BooleanField(default=False, verbose_name='Доставлен')
+    is_confirmed = models.BooleanField(default=False, verbose_name='Подтвержден')
+
+
+    class Meta:
+        verbose_name = 'Заказ'
+        verbose_name_plural = 'Заказы'
+
+    def __str__(self):
+        return 'Заказ № '+ str(self.id)
+
+
+class OrderedGoods(models.Model):
+    good_id = models.PositiveIntegerField(verbose_name='Заказанный товар')
+    shop_id = models.PositiveIntegerField(verbose_name='Предоставивший поставщик')
+    quantity = models.CharField(max_length=50, verbose_name='Количество')
+    order = models.ForeignKey(Order, verbose_name='Заказ', related_name='ordered_goods', blank=True, on_delete=models.CASCADE)
+
+
+    class Meta:
+        verbose_name = 'Заказанный товар'
+        verbose_name_plural = 'Заказанные товары'
+
+    def __str__(self):
+        return str(self.good_id)

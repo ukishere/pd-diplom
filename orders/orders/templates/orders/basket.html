@@ -1,0 +1,30 @@
+<head>
+    <title>Basket</title>
+</head>
+
+<body>
+
+    Для заказа направьте json файл со следующими полями:<br>
+    {good_id, shop_id, quantity}
+    <br>
+    <br>
+
+    Ваш заказ:
+    <br>
+        {% for good in OrderedGoods %}
+            ID товара: {{ good.good_id }}<br>
+            ID поставщика: {{ good.shop_id }}<br>
+            Колличество: {{ good.quantity }}<br>
+            <br>
+        {% endfor %}
+    Цена выбранных товаров: {{ GoodsPrice }}<br>
+    Цена доставки: {{ DeliveryPrice }}<br>
+    Итого:  {{ FinalPrice }}
+    <br>
+    <br>
+    <a href={{ window.location.hostname }}"/goods_list"><input type="submit" value="Назад"></a>
+    <br>
+    <a href={{ window.location.hostname }}"/approval"><input type="submit" value="К подтверждению заказа"></a>
+    <br>
+    <a href={{ window.location.hostname }}"/logout"><input type="submit" value="Разлогиниться"></a>
+</body>

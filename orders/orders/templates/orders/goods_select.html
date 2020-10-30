@@ -1,0 +1,30 @@
+<head>
+    <title>Goods select</title>
+</head>
+
+<body>
+
+    {% for good in Good %}
+        ID: {{ good.id }}<br>
+        Название: {{ good.name }}<br>
+        Модель: {{ good.model }}<br>
+        Количество: {{ good.quantity }}<br>
+        Цена: {{ good.price_rrc }}<br>
+        Парамерты:<br>
+        {% for parameter in good.parameters.all %}
+            {{ parameter }}<br>
+        {% endfor %}
+        Поставщики:<br>
+        <p><select>
+            <option disabled>Список поставщиков</option>
+                {% for shop in good.shops.all %}
+                <option>{{ shop }}</option>
+                {% endfor %}
+        </select></p>
+    {% endfor %}
+
+    <br>
+    <a href={{ window.location.hostname }}"/goods_list"><input type="submit" value="Назад"></a>
+    <br>
+    <a href={{ window.location.hostname }}"/logout"><input type="submit" value="Разлогиниться"></a>
+</body>

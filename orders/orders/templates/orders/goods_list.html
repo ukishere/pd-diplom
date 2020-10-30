@@ -1,0 +1,16 @@
+<head>
+    <title>Goods list</title>
+</head>
+
+<body>
+    Список товаров
+    <br>
+    <br>
+    {% for good in Goods %}
+    <a class="button button-primary" href="{{ window.location.hostname }}{{ good.id }}">{{ good.name }}<br></a>
+    {% endfor %}
+    <br>
+    <a href={{ window.location.hostname }}"/basket"><input type="submit" value="Перейти в корзину"></a>
+    <br>
+    <a href={{ window.location.hostname }}"/logout"><input type="submit" value="Разлогиниться"></a>
+</body>
