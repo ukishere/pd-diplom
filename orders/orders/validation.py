@@ -28,6 +28,25 @@ def basket_validation(request):
     else:
         return True
 
+def approval_validation(request):
+    try:
+        all_data = json.loads(request.body)
+        for data in all_data:
+            data['city']
+            data['street']
+            data['house']
+            data['structure']
+            data['building']
+            data['apartment']
+            data['phone']
+
+        if request.content_type != 'application/json':
+            return False
+    except KeyError or TypeError:
+        return False
+    else:
+        return True
+
 def default_check(request):
     if not request.user.is_authenticated:
         return True, 'login'

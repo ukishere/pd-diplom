@@ -13,6 +13,9 @@ urlpatterns = [
     path('goods_list/<good_id>/', GoodsSelectView, name='goods_select'),
     path('basket/', BasketView.as_view(), name='basket'),
     path('approval/', ApprovalView.as_view(), name='approval'),
+    path('final/', FinalView.as_view(), name='final'),
+    path('all_orders/', AllOrdersView.as_view(), name='all_orders'),
+    path('all_orders/<order_id>/', AllOrdersSelectView, name='orders_select'),
     path('register/', RegistrationView.as_view(), name='register'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
@@ -20,6 +23,8 @@ urlpatterns = [
     path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
-
-    url(r'^', lambda x: HttpResponseRedirect('/goods_list/'))
 ]
+# Редирект со всех несуществующих адресов отключил в целях тестирования
+# urlpatterns += [
+#     url(r'^', lambda x: HttpResponseRedirect('/goods_list/'))
+# ]

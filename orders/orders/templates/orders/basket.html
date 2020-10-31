@@ -9,6 +9,8 @@
     <br>
     <br>
 
+    {% if Found %}
+
     Ваш заказ:
     <br>
         {% for good in OrderedGoods %}
@@ -17,14 +19,24 @@
             Колличество: {{ good.quantity }}<br>
             <br>
         {% endfor %}
+    <br>
     Цена выбранных товаров: {{ GoodsPrice }}<br>
     Цена доставки: {{ DeliveryPrice }}<br>
-    Итого:  {{ FinalPrice }}
+    Итого:  {{ FinalPrice }}<br>
+
+    {% else %}
+
+    У вас нет оформленных заказов
+
+    {% endif %}
+
     <br>
     <br>
-    <a href={{ window.location.hostname }}"/goods_list"><input type="submit" value="Назад"></a>
+    <a href={{ window.location.hostname }}"/goods_list/"><input type="submit" value="Назад"></a>
+    {% if Found %}
     <br>
-    <a href={{ window.location.hostname }}"/approval"><input type="submit" value="К подтверждению заказа"></a>
+    <a href={{ window.location.hostname }}"/approval/"><input type="submit" value="К подтверждению заказа"></a>
+    {% endif %}
     <br>
-    <a href={{ window.location.hostname }}"/logout"><input type="submit" value="Разлогиниться"></a>
+    <a href={{ window.location.hostname }}"/logout/"><input type="submit" value="Разлогиниться"></a>
 </body>

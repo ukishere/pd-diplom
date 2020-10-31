@@ -1,0 +1,48 @@
+<head>
+    <title>Final</title>
+</head>
+
+<body>
+
+    {%if Found%}
+
+    Спасибо за заказ
+    <br>
+    <br>
+    Номер вашего заказа: {{ Order.id }}<br>
+    Дата и время вашего заказа: {{ Order.dt }}<br>
+    Итоговая цена: {{ FinalPrice }} руб.<br>
+        <br>
+
+    Кому доставляем:
+    <br>
+    Имя: {{ User.first_name }}<br>
+    Фамилия: {{ User.second_name }}<br>
+    Отчество:  {{ User.third_name }}<br>
+    Компания:  {{ User.company }}<br>
+    Должность:  {{ User.position }}<br>
+    Электронная почта:  {{ User.email }}<br>
+    <br>
+
+    Куда доставляем:<br>
+    Город: {{ Order.for_whom.city }}<br>
+    Улица: {{ Order.for_whom.street }}<br>
+    Дом: {{ Order.for_whom.house }}<br>
+    Корпус: {{ Order.for_whom.structure }}<br>
+    Строение: {{ Order.for_whom.building }}<br>
+    Квартира: {{ Order.for_whom.apartment }}<br>
+    Телефон: {{ Order.for_whom.phone }}<br>
+
+    {% else %}
+
+    У вас нет неподтвержденных заказов
+
+    {% endif %}
+
+    <br>
+    <a href={{ window.location.hostname }}"/all_orders/"><input type="submit" value="Посмотреть мои заказы"></a>
+    <br>
+    <a href={{ window.location.hostname }}"/goods_list/"><input type="submit" value="Вернуться к каталогу"></a>
+    <br>
+    <a href={{ window.location.hostname }}"/logout/"><input type="submit" value="Разлогиниться"></a>
+</body>

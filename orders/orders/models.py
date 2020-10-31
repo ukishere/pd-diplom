@@ -88,6 +88,13 @@ class ForWhom(models.Model):
     apartment = models.CharField(max_length=50, verbose_name='Квартира', blank=True)
     phone = models.CharField(max_length=50, verbose_name='Телефон', blank=True)
 
+    class Meta:
+        verbose_name = 'Куда доставляем'
+        verbose_name_plural = 'Куда доставляем'
+
+    def __str__(self):
+        return self.city+'('+self.street+self.house+')'
+
 
 class Order(models.Model):
     user = models.ForeignKey(User, related_name='orders', blank=True, on_delete=models.CASCADE, verbose_name='Пользователь')
@@ -118,3 +125,16 @@ class OrderedGoods(models.Model):
 
     def __str__(self):
         return str(self.good_id)
+
+
+def price_calculation(ordered_goods):
+    goods_price = 0
+    for good in ordered_goods:
+        price = Good.objects.get(id=good.good_id).price_rrc
+        goods_price += int(price) * int(good.quantity)
+
+    unique_shops = ordered_goods.values('shop_id').distinct()
+    delivery_price = 100 * unique_shops.count()
+    final_price = goods_price + delivery_price
+
+    return goods_price, delivery_price, final_price

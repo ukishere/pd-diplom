@@ -13,8 +13,8 @@
     <br>
     У вас заказали следующие модели:<br>
     {% for order in Orders %}
-    {{ order.order }} Модель {{ order.good_id }} в количестве {{ order.quantity }} шт.<br>
+    Модель {{ order.good_id }} в количестве {{ order.quantity }} шт. ({{ order.order }})<br>
     {% endfor %}
-    <a href={{ window.location.hostname }}"/logout"><input type="submit" value="Разлогиниться"></a>
+    <a href={{ window.location.hostname }}"/logout/"><input type="submit" value="Разлогиниться"></a>
 </body>
 </html>

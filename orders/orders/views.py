@@ -1,12 +1,12 @@
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.contrib.auth import authenticate, logout, login
 from django.views.generic.edit import FormView, View
 from rest_framework.views import APIView
 from django.shortcuts import redirect, render
 from django.core.mail import send_mail
-import json, datetime
+import json
 
-from .validation import input_validation, basket_validation, default_check
+from .validation import *
 from .models import *
 from .forms import OrdersUserCreationForm, OrdersUserLoginForm
 
@@ -79,22 +79,21 @@ class BasketView(APIView):
         if check:
             return redirect(path)
 
-        order = Order.objects.get(user=request.user, is_confirmed=False)
-        ordered_goods = OrderedGoods.objects.filter(order=order.id)
+        try:
+            order = Order.objects.get(user=request.user, is_confirmed=False)
+            ordered_goods = OrderedGoods.objects.filter(order=order.id)
+            goods_price, delivery_price, final_price = price_calculation(ordered_goods)
+            found = True
 
-        goods_price = 0
-        for good in ordered_goods:
-            price = Good.objects.get(id=good.good_id).price_rrc
-            goods_price += int(price) * int(good.quantity)
+            context = {'OrderedGoods': ordered_goods,
+                       'GoodsPrice': goods_price,
+                       'DeliveryPrice': delivery_price,
+                       'FinalPrice': final_price,
+                       'Found': found}
 
-        unique_shops = ordered_goods.values('shop_id').distinct()
-        delivery_price = 100 * unique_shops.count()
-        final_price = goods_price + delivery_price
-
-        context = {'OrderedGoods': ordered_goods,
-                   'GoodsPrice': goods_price,
-                   'DeliveryPrice': delivery_price,
-                   'FinalPrice': final_price}
+        except Order.DoesNotExist:
+            found = False
+            context = {'Found': found}
 
         template = 'orders/basket.html'
 
@@ -128,12 +127,101 @@ class ApprovalView(APIView):
         if check:
             return redirect(path)
 
+        user = User.objects.get(email=request.user)
         order = Order.objects.get(user=request.user, is_confirmed=False)
-        ordered_goods = OrderedGoods.objects.filter(order=order.id)
-        context = {'OrderedGoods': ordered_goods}
+
+        context = {'User': user, 'For_whom': order.for_whom}
         template = 'orders/approval.html'
 
         return render(request, template, context)
+
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('login')
+        elif request.user.is_vendor:
+            return HttpResponse('Ошибка: вы залогинились как поставщик')
+
+        if approval_validation(request):
+            data = json.loads(request.body)
+            if data:
+
+                for object in data:
+                    current_for_whom, _ = ForWhom.objects.get_or_create(city=object['city'],
+                                                                       street=object['street'],
+                                                                       house=object['house'],
+                                                                       structure=object['structure'],
+                                                                       building=object['building'],
+                                                                       apartment=object['apartment'],
+                                                                       phone=object['phone'])
+
+                current_order, _ = Order.objects.filter(is_confirmed=False).get_or_create(user=request.user)
+                current_order.for_whom = current_for_whom
+                current_order.save()
+
+            return (HttpResponse('Данные приняты'))
+        else:
+            return HttpResponse('Ошибка: проверьте корректность данных')
+
+
+class FinalView(APIView):
+    def get(self, request, *args, **kwargs):
+        check, path = default_check(request)
+        if check:
+            return redirect(path)
+
+        user = User.objects.get(email=request.user)
+
+        try:
+            order = Order.objects.get(user=request.user, is_confirmed=False)
+            ordered_goods = OrderedGoods.objects.filter(order=order.id)
+            _, _, final_price = price_calculation(ordered_goods)
+            found = True
+            order.is_confirmed = True
+            order.save()
+            send_mail(f'Спасибо за ваш заказ № {order.id}', '', 'django_test_diploma@mail.ru', [user.email,], fail_silently=False)
+            context = {'Found': found, 'User': user, 'Order': order, 'FinalPrice': final_price}
+
+        except Order.DoesNotExist:
+            found = False
+            context = {'Found': found}
+
+        template = 'orders/final.html'
+
+        return render(request, template, context)
+
+
+class AllOrdersView(APIView):
+    def get(self, request, *args, **kwargs):
+        check, path = default_check(request)
+        if check:
+            return redirect(path)
+
+        user = User.objects.get(email=request.user)
+        orders = Order.objects.filter(user=request.user)
+        context = {'Orders': orders}
+        template = 'orders/all_orders.html'
+
+        return render(request, template, context)
+
+    def put(self, request, *args, **kwargs):
+        order = Order.objects.get(id=request.query_params['order_id'])
+        order.is_delivered = True
+        order.save()
+        return HttpResponse('Статус изменен')
+
+
+def AllOrdersSelectView(request, order_id):
+    check, path = default_check(request)
+    if check:
+        return redirect(path)
+
+    ordered_goods = OrderedGoods.objects.filter(order=order_id)
+    _, _, final_price = price_calculation(ordered_goods)
+    template = 'orders/orders_select.html'
+    context = {'OrderedGoods': ordered_goods, 'FinalPrice': final_price}
+
+    return render(request, template, context)
+
 
 class OrdersView(APIView):
     def get(self, request, *args, **kwargs):

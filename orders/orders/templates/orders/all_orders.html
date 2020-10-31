@@ -1,0 +1,25 @@
+<head>
+    <title>All orders</title>
+</head>
+
+<body>
+
+    Список заказов
+    <br>
+    <br>
+    {% for order in Orders %}
+    <a class="button button-primary" href="{{ window.location.hostname }}{{ order.id }}">{{ order }}<br></a>
+    <br>Статусы:<br>
+    {% if order.is_confirmed %} Подтвержден {% else %} Не подтвержден {% endif %}<br>
+    {% if order.is_delivered %} Доставлен {% else %} Не доставлен {% endif %}<br>
+    {% endfor %}
+
+    <br>
+    Для подтверждения того, что заказ доставлен направьте put запрос c параметром {order_id}
+    <br>
+
+    <br>
+    <a href={{ window.location.hostname }}"/goods_list/"><input type="submit" value="Вернуться к каталогу"></a>
+    <br>
+    <a href={{ window.location.hostname }}"/logout/"><input type="submit" value="Разлогиниться"></a>
+</body>

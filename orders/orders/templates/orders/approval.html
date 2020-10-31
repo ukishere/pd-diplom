@@ -4,15 +4,33 @@
 
 <body>
 
-Сделай форму для for whom
-тут ее заполняют и отправляют, если она валидна, автоматом меняется статус на подтвержденный
+    Для подтверждения заказа направьте json файл со следующими полями:<br>
+    {city, street, house, structure, building, apartment, phone}
+    <br>
+    <br>
 
-отдельная страница - просмотр своих заказов
+    Кому доставляем:
+    <br>
+    Имя: {{ User.first_name }}<br>
+    Фамилия: {{ User.second_name }}<br>
+    Отчество:  {{ User.third_name }}<br>
+    Компания:  {{ User.company }}<br>
+    Должность:  {{ User.position }}<br>
+    <br>
+
+    Куда доставляем:<br>
+    Город: {{ For_whom.city }}<br>
+    Улица: {{ For_whom.street }}<br>
+    Дом: {{ For_whom.house }}<br>
+    Корпус: {{ For_whom.structure }}<br>
+    Строение: {{ For_whom.building }}<br>
+    Квартира: {{ For_whom.apartment }}<br>
+    Телефон: {{ For_whom.phone }}<br>
 
     <br>
-    <a href={{ window.location.hostname }}"/basket"><input type="submit" value="Назад"></a>
+    <a href={{ window.location.hostname }}"/basket/"><input type="submit" value="Назад"></a>
     <br>
-    <a href={{ window.location.hostname }}"/final"><input type="submit" value="Подтверждаю"></a>
+    <a href={{ window.location.hostname }}"/final/"><input type="submit" value="Подтверждаю"></a>
     <br>
-    <a href={{ window.location.hostname }}"/logout"><input type="submit" value="Разлогиниться"></a>
+    <a href={{ window.location.hostname }}"/logout/"><input type="submit" value="Разлогиниться"></a>
 </body>

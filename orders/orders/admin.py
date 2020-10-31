@@ -39,7 +39,7 @@ class OrderUserAdmin(UserAdmin):
     list_filter = ('email',)
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_vendor', 'company')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_vendor', 'company', 'position')}),
     )
     add_fieldsets = (
         (None, {

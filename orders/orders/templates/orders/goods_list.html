@@ -10,7 +10,9 @@
     <a class="button button-primary" href="{{ window.location.hostname }}{{ good.id }}">{{ good.name }}<br></a>
     {% endfor %}
     <br>
-    <a href={{ window.location.hostname }}"/basket"><input type="submit" value="Перейти в корзину"></a>
+    <a href={{ window.location.hostname }}"/basket/"><input type="submit" value="Перейти в корзину"></a>
     <br>
-    <a href={{ window.location.hostname }}"/logout"><input type="submit" value="Разлогиниться"></a>
+    <a href={{ window.location.hostname }}"/all_orders/"><input type="submit" value="Посмотреть мои заказы"></a>
+    <br>
+    <a href={{ window.location.hostname }}"/logout/"><input type="submit" value="Разлогиниться"></a>
 </body>
